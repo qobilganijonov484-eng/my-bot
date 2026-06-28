@@ -104,9 +104,10 @@ f"""
 # USER ID YUBORADI
 # =========================
 @dp.message()
-async def get_game_id(message: Message)
-print("USER ID:", message.from_user.id)
-    
+async def get_game_id(message: Message):
+
+    print("USER ID:", message.from_user.id)
+
     if message.text.isdigit():
 
         game_id = message.text
