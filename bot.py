@@ -7,7 +7,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 # 🔴 SEN TO'LDIRASAN
 # =========================
 
-BOT_TOKEN = "TOKENING"
+BOT_TOKEN = "8956510505:AAEhCCMDz46X9cl5YdNAgoEvjES--6f71wc"
 ADMIN_ID = 8956510505   # o'zingni Telegram ID yoz
 
 # 💳 KARTA
