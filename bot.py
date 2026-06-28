@@ -106,7 +106,6 @@ f"""
 @dp.message()
 async def get_game_id(message: Message):
 
-    print("USER ID:", message.from_user.id)
 
     if message.text.isdigit():
 
