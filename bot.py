@@ -4,14 +4,17 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 # =====================
-# 🔧 FILL HERE (TO'LDIR)
+# 🔧 TO'LDIRILADIGAN JOY
 # =====================
 BOT_TOKEN = "8956510505:AAEhCCMDz46X9cl5YdNAgoEvjES--6f71wc"
-ADMIN_ID = 8203205151
+ADMIN_ID =  8203205151
 
 CARD_NUMBER = "9860350147021686"
-CARD_OWNER = "B........SH....."
+CARD_OWNER = "<<KARTA_EGASI>>"
 # =====================
+
+bot = Bot(BOT_TOKEN)
+dp = Dispatcher()
 
 orders = {}
 
@@ -29,20 +32,23 @@ PRODUCTS = {
     "uc325": ("🎯 PUBG UC 325", "60 000 so'm"),
 }
 
-bot = Bot(BOT_TOKEN)
-dp = Dispatcher()
 
-
+# =====================
+# MENU
+# =====================
 def menu():
     kb = InlineKeyboardBuilder()
 
-    for key, value in PRODUCTS.items():
-        kb.button(text=value[0], callback_data=key)
+    for key, (name, price) in PRODUCTS.items():
+        kb.button(text=name, callback_data=key)
 
     kb.adjust(1)
     return kb.as_markup()
 
 
+# =====================
+# START
+# =====================
 @dp.message(F.text == "/start")
 async def start(message: Message):
     await message.answer(
@@ -51,29 +57,31 @@ async def start(message: Message):
     )
 
 
+# =====================
+# BUY
+# =====================
 @dp.callback_query()
 async def buy(call: CallbackQuery):
 
-    # 🔴 XATOLARNI OLDINI OLISH
     if call.data not in PRODUCTS:
-        await call.message.answer("❌ Noto‘g‘ri mahsulot tanlandi")
-        await call.answer()
+        await call.answer("❌ Noto‘g‘ri mahsulot", show_alert=True)
         return
 
     name, price = PRODUCTS[call.data]
 
-    orders[call.from_user.id] = (name, price)
+    orders[call.from_user.id] = {
+        "name": name,
+        "price": price
+    }
 
     await call.message.answer(
 f"""
 🧾 BUYURTMA
 
-📦 {name}
-💰 {price}
+📦 Mahsulot: {name}
+💰 Narx: {price}
 
-💳 Karta:
-{CARD_NUMBER}
-
+💳 Karta: {CARD_NUMBER}
 👤 {CARD_OWNER}
 
 📌 Endi o'yin ID yuboring
@@ -83,6 +91,9 @@ f"""
     await call.answer()
 
 
+# =====================
+# ID QABUL QILISH
+# =====================
 @dp.message()
 async def get_id(message: Message):
 
@@ -91,25 +102,22 @@ async def get_id(message: Message):
 
     user_id = message.from_user.id
 
-    # 🔴 agar user mahsulot tanlamagan bo‘lsa
     if user_id not in orders:
         await message.answer("❌ Avval mahsulot tanlang (/start)")
         return
 
     game_id = message.text
-
-    name, price = orders[user_id]
+    name = orders[user_id]["name"]
+    price = orders[user_id]["price"]
 
     await message.answer(
 f"""
-✅ Buyurtma qabul qilindi
+✅ BUYURTMA QABUL QILINDI
 
 📦 {name}
 💰 {price}
 
 🆔 ID: {game_id}
-
-⏳ Tekshirilmoqda
 """
     )
 
@@ -119,7 +127,7 @@ f"""
 🆕 YANGI BUYURTMA
 
 📦 Mahsulot: {name}
-💰 Summa: {price}
+💰 Narx: {price}
 🆔 ID: {game_id}
 
 👤 User ID: {message.from_user.id}
@@ -128,9 +136,11 @@ f"""
     )
 
 
+# =====================
+# RUN
+# =====================
 async def main():
     await dp.start_polling(bot)
-
 
 if __name__ == "__main__":
     asyncio.run(main())
