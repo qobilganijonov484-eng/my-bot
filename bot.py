@@ -56,9 +56,6 @@ def menu():
 # START
 # =========================
 
-@dp.message(F.text == "/start")
-async def start(message: Message):
-
     await message.answer(
         "💎 DONAT SHOP\nMahsulotni tanlang:",
         reply_markup=menu()
@@ -69,6 +66,9 @@ async def start(message: Message):
 # MAHSULOT TANLASH
 # =========================
 
+@dp.message(F.text == "/start")
+async def start(message: Message):
+    
 @dp.callback_query()
 async def buy(call: CallbackQuery):
 
@@ -103,10 +103,10 @@ f"""
 # =========================
 # USER ID YUBORADI
 # =========================
-
 @dp.message()
-async def get_game_id(message: Message):
-
+async def get_game_id(message: Message)
+print("USER ID:", message.from_user.id)
+    
     if message.text.isdigit():
 
         game_id = message.text
