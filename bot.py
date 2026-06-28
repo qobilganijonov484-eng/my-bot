@@ -7,7 +7,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 # 🔧 FILL HERE (TO'LDIR)
 # =====================
 BOT_TOKEN = "8956510505:AAEhCCMDz46X9cl5YdNAgoEvjES--6f71wc"
-ADMIN_ID =  8203205151
+ADMIN_ID = 8203205151
 
 CARD_NUMBER = "9860350147021686"
 CARD_OWNER = "B........SH....."
@@ -32,6 +32,7 @@ PRODUCTS = {
 bot = Bot(BOT_TOKEN)
 dp = Dispatcher()
 
+
 def menu():
     kb = InlineKeyboardBuilder()
 
@@ -52,6 +53,12 @@ async def start(message: Message):
 
 @dp.callback_query()
 async def buy(call: CallbackQuery):
+
+    # 🔴 XATOLARNI OLDINI OLISH
+    if call.data not in PRODUCTS:
+        await call.message.answer("❌ Noto‘g‘ri mahsulot tanlandi")
+        await call.answer()
+        return
 
     name, price = PRODUCTS[call.data]
 
@@ -79,15 +86,19 @@ f"""
 @dp.message()
 async def get_id(message: Message):
 
-    if not message.text.isdigit():
+    if not message.text or not message.text.isdigit():
+        return
+
+    user_id = message.from_user.id
+
+    # 🔴 agar user mahsulot tanlamagan bo‘lsa
+    if user_id not in orders:
+        await message.answer("❌ Avval mahsulot tanlang (/start)")
         return
 
     game_id = message.text
 
-    name, price = orders.get(
-        message.from_user.id,
-        ("Noma'lum", "Noma'lum")
-    )
+    name, price = orders[user_id]
 
     await message.answer(
 f"""
