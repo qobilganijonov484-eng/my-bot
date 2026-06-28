@@ -3,23 +3,17 @@ from aiogram import Bot, Dispatcher, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-# =========================
-# 🔴 SEN TO'LDIRASAN
-# =========================
-
+# =====================
+# 🔧 FILL HERE (TO'LDIR)
+# =====================
 BOT_TOKEN = "8956510505:AAEhCCMDz46X9cl5YdNAgoEvjES--6f71wc"
-ADMIN_ID = 8203205151   # o'zingni Telegram ID yoz
+ADMIN_ID =  8203205151
 
-# 💳 KARTA
 CARD_NUMBER = "9860350147021686"
-CARD_OWNER = "B.......SH......"
+CARD_OWNER = "B........SH....."
+# =====================
 
-# buyurtmalar saqlanadi
 orders = {}
-
-# =========================
-# 💎 DIAMOND + UC
-# =========================
 
 PRODUCTS = {
     "55": ("💎 55 Diamond", "13 000 so'm"),
@@ -38,47 +32,30 @@ PRODUCTS = {
 bot = Bot(BOT_TOKEN)
 dp = Dispatcher()
 
-
 def menu():
     kb = InlineKeyboardBuilder()
 
     for key, value in PRODUCTS.items():
-        kb.button(
-            text=value[0],
-            callback_data=key
-        )
+        kb.button(text=value[0], callback_data=key)
 
     kb.adjust(1)
     return kb.as_markup()
 
 
-# =========================
-# START
-# =========================
-
+@dp.message(F.text == "/start")
+async def start(message: Message):
     await message.answer(
         "💎 DONAT SHOP\nMahsulotni tanlang:",
         reply_markup=menu()
     )
 
 
-# =========================
-# MAHSULOT TANLASH
-# =========================
-
-@dp.message(F.text == "/start")
-async def start(message: Message):
-    
 @dp.callback_query()
 async def buy(call: CallbackQuery):
 
     name, price = PRODUCTS[call.data]
 
-    # saqlab qo'yamiz
-    orders[call.from_user.id] = (
-        name,
-        price
-    )
+    orders[call.from_user.id] = (name, price)
 
     await call.message.answer(
 f"""
@@ -92,74 +69,53 @@ f"""
 
 👤 {CARD_OWNER}
 
-📌 Endi o'yin ID ni yuboring
+📌 Endi o'yin ID yuboring
 """
     )
 
     await call.answer()
 
 
-
-# =========================
-# USER ID YUBORADI
-# =========================
 @dp.message()
-async def get_game_id(message: Message):
+async def get_id(message: Message):
 
+    if not message.text.isdigit():
+        return
 
-    if message.text.isdigit():
+    game_id = message.text
 
-        game_id = message.text
+    name, price = orders.get(
+        message.from_user.id,
+        ("Noma'lum", "Noma'lum")
+    )
 
-        name, price = orders.get(
-            message.from_user.id,
-            ("Noma'lum", "Noma'lum")
-        )
-
-
-        await message.answer(
+    await message.answer(
 f"""
-🧾 CHEK
+✅ Buyurtma qabul qilindi
 
 📦 {name}
 💰 {price}
 
-🆔 O'yin ID:
-{game_id}
+🆔 ID: {game_id}
 
-⏳ Admin tekshiradi.
+⏳ Tekshirilmoqda
 """
-        )
+    )
 
-
-        await bot.send_message(
-            ADMIN_ID,
+    await bot.send_message(
+        ADMIN_ID,
 f"""
 🆕 YANGI BUYURTMA
 
-📦 Mahsulot:
-{name}
+📦 Mahsulot: {name}
+💰 Summa: {price}
+🆔 ID: {game_id}
 
-💰 Narx:
-{price}
-
-🆔 Game ID:
-{game_id}
-
-👤 Telegram ID:
-{message.from_user.id}
-
-👤 Username:
-@{message.from_user.username or "yo'q"}
-
-⏳ TASDIQLASH KERAK
+👤 User ID: {message.from_user.id}
+👤 Username: @{message.from_user.username or "yo'q"}
 """
-        )
+    )
 
-
-# =========================
-# RUN
-# =========================
 
 async def main():
     await dp.start_polling(bot)
