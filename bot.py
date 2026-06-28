@@ -8,7 +8,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 # =========================
 
 BOT_TOKEN = "8956510505:AAEhCCMDz46X9cl5YdNAgoEvjES--6f71wc"
-ADMIN_ID = 8956510505   # o'zingni Telegram ID yoz
+ADMIN_ID = 8203205151   # o'zingni Telegram ID yoz
 
 # 💳 KARTA
 CARD_NUMBER = "9860350147021686"
