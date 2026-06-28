@@ -3,13 +3,16 @@ from aiogram import Bot, Dispatcher, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-BOT_TOKEN = "TOKENING"
+
+BOT_TOKEN = "8956510505:AAEhCCMDz46X9cl5YdNAgoEvjES--6f71wc"
 ADMIN_ID = 8203205151
 
 CARD_NUMBER = "9860350147021686"
 CARD_OWNER = "B.......SH......"
 
+
 orders = {}
+
 
 PRODUCTS = {
     "55": ("💎 55 Diamond", "13 000 so'm"),
@@ -31,6 +34,7 @@ dp = Dispatcher()
 
 
 def menu():
+
     kb = InlineKeyboardBuilder()
 
     for key, value in PRODUCTS.items():
@@ -40,7 +44,9 @@ def menu():
         )
 
     kb.adjust(1)
+
     return kb.as_markup()
+
 
 
 @dp.message(F.text == "/start")
@@ -52,12 +58,17 @@ async def start(message: Message):
     )
 
 
+
 @dp.callback_query()
 async def buy(call: CallbackQuery):
 
     name, price = PRODUCTS[call.data]
 
-    orders[call.from_user.id] = (name, price)
+    orders[call.from_user.id] = (
+        name,
+        price
+    )
+
 
     await call.message.answer(
 f"""
@@ -71,7 +82,7 @@ f"""
 
 👤 {CARD_OWNER}
 
-📌 O'yin ID yuboring
+📌 Endi o'yin ID yuboring
 """
     )
 
@@ -80,13 +91,14 @@ f"""
 
 
 @dp.message()
-async def get_game_id(message: Message):
+async def get_id(message: Message):
 
     if not message.text.isdigit():
         return
 
 
     game_id = message.text
+
 
     name, price = orders.get(
         message.from_user.id,
@@ -96,7 +108,7 @@ async def get_game_id(message: Message):
 
     await message.answer(
 f"""
-🧾 CHEK
+✅ Buyurtma qabul qilindi
 
 📦 {name}
 💰 {price}
@@ -112,7 +124,7 @@ f"""
     await bot.send_message(
         ADMIN_ID,
 f"""
-🆕 BUYURTMA
+🆕 YANGI BUYURTMA
 
 📦 Mahsulot:
 {name}
@@ -123,7 +135,7 @@ f"""
 🆔 O'yin ID:
 {game_id}
 
-👤 Telegram ID:
+👤 User:
 {message.from_user.id}
 
 👤 Username:
@@ -132,9 +144,13 @@ f"""
     )
 
 
+
 async def main():
+
     await dp.start_polling(bot)
 
 
+
 if __name__ == "__main__":
+
     asyncio.run(main())
